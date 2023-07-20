@@ -1,6 +1,6 @@
 # Hypothetical_Superstore_analysis
 
--- Q1) What percentage of total orders were shipped on the same date?
+# Q1) What percentage of total orders were shipped on the same date?
 SELECT
     ROUND((COUNT(DISTINCT Order_ID) / (SELECT COUNT(DISTINCT Order_ID) 
     AS total_orders FROM superstore )) * 100, 2) AS Same_Day_Shipping_Percentage
@@ -9,7 +9,7 @@ FROM
 WHERE
     Order_Date = Ship_Date;
     
--- Q2) Name top 3 customers with highest total value of orders?    
+# Q2) Name top 3 customers with highest total value of orders?    
     SELECT
     Customer_Name,
     ROUND(SUM(sales), 3) AS TotalOrderValue
@@ -21,7 +21,7 @@ ORDER BY
     SUM(sales) DESC
 LIMIT 10;
 
--- Q3) Find the top 5 items with the highest average sales per day?
+# Q3) Find the top 5 items with the highest average sales per day?
 
 SELECT
     Product_ID,
@@ -33,7 +33,9 @@ GROUP BY
 ORDER BY
     Average_Sales DESC
 LIMIT 5;
--- Q4) Write a query to find the average order value for each customer, and rank the customers by their average order value? 
+
+
+# Q4) Write a query to find the average order value for each customer, and rank the customers by their average order value? 
 
 
  SELECT
@@ -46,7 +48,7 @@ GROUP BY
     Customer_Name;
 
 
--- Q5) Give the name of customers who ordered highest and lowest orders from each city?
+# Q5) Give the name of customers who ordered highest and lowest orders from each city?
 
 
  WITH cte AS (
@@ -99,7 +101,7 @@ ORDER BY
     h.City;
 
 
--- Q6) What is the most demanded sub-category in the west region?
+# Q6) What is the most demanded sub-category in the west region?
 
 
 SELECT
@@ -116,7 +118,7 @@ ORDER BY
 LIMIT 1;
 
 
--- Q7) Which order has the highest number of items? 
+# Q7) Which order has the highest number of items? 
 
 
 SELECT
@@ -131,7 +133,7 @@ ORDER BY
 LIMIT 1;
 
 
--- Q8) Which order has the highest cumulative value?
+# Q8) Which order has the highest cumulative value?
 
 
 SELECT
@@ -146,7 +148,7 @@ ORDER BY
 LIMIT 1;
 
 
--- Q9) Which segment’s order is more likely to be shipped via first class?
+# Q9) Which segment’s order is more likely to be shipped via first class?
 
 
 SELECT
@@ -162,7 +164,7 @@ ORDER BY
     num_of_ordr DESC;
 
 
--- Q10) Which city is least contributing to total revenue?
+# Q10) Which city is least contributing to total revenue?
 
 
 SELECT
@@ -177,7 +179,7 @@ ORDER BY
 LIMIT 1;
 
 
--- Q11) What is the average time for orders to get shipped after order is placed?
+# Q11) What is the average time for orders to get shipped after order is placed?
 
 
 SELECT
@@ -186,8 +188,8 @@ FROM
     superstore;
 
 
-/* Q12) Which segment places the highest number of orders from each state 
-		and which segment places the largest individual orders from each state? */
+# Q12) Which segment places the highest number of orders from each state 
+		and which segment places the largest individual orders from each state? 
 
         
 WITH cte AS (
@@ -212,8 +214,8 @@ WHERE
 
 
 
-/* Q13) Find all the customers who individually ordered on 3 consecutive days 
-		where each day’s total order was more than 50 in value?*/
+# Q13) Find all the customers who individually ordered on 3 consecutive days 
+		where each day’s total order was more than 50 in value?
 
 
 WITH cte AS (
@@ -243,7 +245,7 @@ WHERE
     date_diff = 1;
 
 
--- Q14) Find the maximum number of days for which total sales on each day kept rising?
+# Q14) Find the maximum number of days for which total sales on each day kept rising?
 
 
  WITH sales_sequence AS (
