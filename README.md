@@ -1,57 +1,48 @@
 # Hypothetical_Superstore_analysis
 
 # Q1) What percentage of total orders were shipped on the same date?
-SELECT
+    SELECT
     ROUND((COUNT(DISTINCT Order_ID) / (SELECT COUNT(DISTINCT Order_ID) 
     AS total_orders FROM superstore )) * 100, 2) AS Same_Day_Shipping_Percentage
-FROM
+     FROM
     superstore
-WHERE
+    WHERE
     Order_Date = Ship_Date;
     
 # Q2) Name top 3 customers with highest total value of orders?    
     SELECT
     Customer_Name,
-    ROUND(SUM(sales), 3) AS TotalOrderValue
-FROM
-    superstore
-GROUP BY
-    Customer_Name
-ORDER BY
+    ROUND(SUM(sales), 3) AS TotalOrderValue FROM superstore GROUP BY Customer_Name
+    ORDER BY
     SUM(sales) DESC
-LIMIT 10;
+    LIMIT 10;
 
 # Q3) Find the top 5 items with the highest average sales per day?
 
-SELECT
+    SELECT
     Product_ID,
     ROUND(AVG(sales), 3) AS Average_Sales
-FROM
-    superstore
-GROUP BY
-    Product_ID
-ORDER BY
-    Average_Sales DESC
-LIMIT 5;
+    FROM superstore
+    GROUP BY Product_ID
+    ORDER BY Average_Sales DESC
+    LIMIT 5;
 
 
 # Q4) Write a query to find the average order value for each customer, and rank the customers by their average order value? 
 
 
- SELECT
+    SELECT
     Customer_Name,
     ROUND(AVG(sales), 3) AS avg_order_value,
     DENSE_RANK() OVER (ORDER BY AVG(sales) DESC) AS sales_rank
-FROM
-    superstore
-GROUP BY
-    Customer_Name;
+    FROM superstore
+    GROUP BY Customer_Name;
 
 
 # Q5) Give the name of customers who ordered highest and lowest orders from each city?
 
 
- WITH cte AS (
+    WITH cte AS (
     SELECT
         City,
         ROUND(MAX(sales), 4) AS highest_order,
@@ -59,9 +50,8 @@ GROUP BY
     FROM
         superstore
     GROUP BY
-        City
-),
-highest_orders AS (
+        City),
+    highest_orders AS (
     SELECT
         s.City,
         cte.highest_order,
@@ -73,8 +63,8 @@ highest_orders AS (
         cte ON s.City = cte.City
     WHERE
         s.Sales = cte.highest_order
-),
-lowest_orders AS (
+    ),
+    lowest_orders AS (
     SELECT
         s.City,
         cte.highest_order,
@@ -85,114 +75,112 @@ lowest_orders AS (
     INNER JOIN
         cte ON s.City = cte.City
     WHERE
-        s.Sales = cte.lowest_order
-)
-SELECT
+        s.Sales = cte.lowest_order)
+    SELECT
     h.City,
     h.highest_order,
     h.Customer_Name AS highest_order_customer,
     l.lowest_order,
     l.Customer_Name AS lowest_order_customer
-FROM
+    FROM
     highest_orders h
-INNER JOIN
+    INNER JOIN
     lowest_orders l ON h.City = l.City
-ORDER BY
+    ORDER BY
     h.City;
 
 
 # Q6) What is the most demanded sub-category in the west region?
 
 
-SELECT
+    SELECT
     Sub_Category,
     ROUND(SUM(sales), 3) AS total_quantity
-FROM
+    FROM
     superstore
-WHERE
+    WHERE
     Region = 'West'
-GROUP BY
+    GROUP BY
     Sub_Category
-ORDER BY
+    ORDER BY
     total_quantity DESC
-LIMIT 1;
+    LIMIT 1;
 
 
 # Q7) Which order has the highest number of items? 
 
 
-SELECT
+    SELECT
     order_id,
     COUNT(order_id) AS num_item
-FROM
+    FROM
     superstore
-GROUP BY
-    order_id
-ORDER BY
+    GROUP BY
+     order_id
+     ORDER BY
     num_item DESC
-LIMIT 1;
+    LIMIT 1;
 
 
 # Q8) Which order has the highest cumulative value?
 
 
-SELECT
+    SELECT
     order_id,
-    ROUND(SUM(sales), 3) AS order_value
-FROM
+    ROUND(SUM(sales), 3) AS order_value 
+    FROM
     superstore
-GROUP BY
+    GROUP BY
     order_id
-ORDER BY
+    ORDER BY
     order_value DESC
-LIMIT 1;
+    LIMIT 1;
 
 
 # Q9) Which segment’s order is more likely to be shipped via first class?
 
 
-SELECT
+    SELECT
     segment,
     COUNT(order_id) AS num_of_ordr
-FROM
+    FROM
     superstore
-WHERE
+    WHERE
     ship_mode = 'First Class'
-GROUP BY
+    GROUP BY
     segment
-ORDER BY
+    ORDER BY
     num_of_ordr DESC;
 
 
 # Q10) Which city is least contributing to total revenue?
 
 
-SELECT
+    SELECT
     city,
     ROUND(SUM(sales), 3) AS TotalSales
-FROM
+    FROM
     superstore
-GROUP BY
+    GROUP BY
     city
-ORDER BY
+    ORDER BY
     TotalSales ASC
-LIMIT 1;
+    LIMIT 1;
 
 
 # Q11) What is the average time for orders to get shipped after order is placed?
 
 
-SELECT
+    SELECT
     AVG(DATEDIFF(ship_date, order_date)) AS avg_ship_time
-FROM
+    FROM
     superstore;
 
 
-# Q12) Which segment places the highest number of orders from each state 
-		and which segment places the largest individual orders from each state? 
+# Q12) Which segment places the highest number of orders from each state and which segment places the largest individual orders from each state? 
 
         
-WITH cte AS (
+    WITH cte AS (
     SELECT
         state,
         segment,
@@ -202,23 +190,21 @@ WITH cte AS (
         superstore
     GROUP BY
         state,
-        segment
-)
-SELECT
+        segment)
+    SELECT
     state,
     segment
-FROM
+    FROM
     cte
-WHERE
+    WHERE
     state_rank = 1;
 
 
 
-# Q13) Find all the customers who individually ordered on 3 consecutive days 
-		where each day’s total order was more than 50 in value?
+# Q13) Find all the customers who individually ordered on 3 consecutive days where each day’s total order was more than 50 in value?
 
 
-WITH cte AS (
+    WITH cte AS (
     SELECT
         Customer_ID,
         Customer_Name,
@@ -234,21 +220,20 @@ WITH cte AS (
         Order_ID,
         Order_Date
     HAVING
-        SUM(sales) > 50
-)
-SELECT
+        SUM(sales) > 50)
+    SELECT
     Customer_ID,
     Customer_Name
-FROM
+    FROM
     cte
-WHERE
+    WHERE
     date_diff = 1;
 
 
 # Q14) Find the maximum number of days for which total sales on each day kept rising?
 
 
- WITH sales_sequence AS (
+    WITH sales_sequence AS (
     SELECT
         Order_Date,
         SUM(Sales) AS TotalSales,
@@ -257,8 +242,8 @@ WHERE
         superstore
     GROUP BY
         Order_Date
-),
-rising_days AS (
+      ),
+     rising_days AS (
     SELECT
         s1.Order_Date,
         COUNT(*) AS rising_day_count
@@ -268,9 +253,9 @@ rising_days AS (
         sales_sequence s2 ON s1.TotalSales < s2.TotalSales AND s1.rn < s2.rn
     GROUP BY
         s1.Order_Date
-)
-SELECT
+     )
+    SELECT
     MAX(rising_day_count) AS max_rising_days
-FROM
+    FROM
     rising_days;
 
